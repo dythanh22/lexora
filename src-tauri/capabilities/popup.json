@@ -1,0 +1,15 @@
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "popup",
+  "description": "Quyền tối thiểu cho cửa sổ kết quả/nhập văn bản.",
+  "windows": ["popup"],
+  "permissions": [
+    "core:default",
+    "allow-trigger-action",
+    "allow-get-session-snapshot",
+    "allow-submit-translation",
+    "allow-cancel-translation",
+    "allow-get-config",
+    "allow-close-window"
+  ]
+}

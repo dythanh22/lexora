@@ -1,0 +1,74 @@
+# Khung CI theo thiết kế §12.1. Kiểm lại phiên bản các action ở M1.
+# Test headless KHÔNG thay thế test hotkey/focus/IME trên máy thật (xem docs/traceability.md).
+name: ci
+on:
+  push:
+  pull_request:
+
+jobs:
+  libs:
+    name: core + providers (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+      - uses: Swatinem/rust-cache@v2
+      - run: cargo fmt --all -- --check
+      - run: cargo clippy -p lexora-core -p lexora-providers --all-targets -- -D warnings
+      - run: cargo test -p lexora-core -p lexora-providers
+
+  frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      # TODO(M1): commit package-lock.json rồi đổi sang `npm ci`.
+      - run: npm install
+      - run: npm run check
+      - run: npm test
+      - run: npm run build
+
+  shell:
+    name: tauri shell (${{ matrix.os }})
+    needs: [libs, frontend]
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Linux system libraries
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libwebkit2gtk-4.1-dev build-essential libxdo-dev \
+            libssl-dev libayatana-appindicator3-dev librsvg2-dev
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: clippy
+      - uses: Swatinem/rust-cache@v2
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm install
+      - run: npm run build
+      # Cần icon sinh bởi `tauri icon` (xem README, bước 1).
+      - run: npx tauri icon src-tauri/icons/source.png
+      - run: cargo clippy -p lexora --all-targets -- -D warnings
+      - run: cargo test -p lexora
+
+  deny:
+    runs-on: ubuntu-latest
+    continue-on-error: true # M1: bỏ khi Cargo.lock đã được chốt
+    steps:
+      - uses: actions/checkout@v4
+      - uses: EmbarkStudios/cargo-deny-action@v2

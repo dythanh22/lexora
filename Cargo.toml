@@ -1,0 +1,30 @@
+[workspace]
+resolver = "2"
+members = ["crates/core", "crates/providers", "src-tauri"]
+# PoC là chương trình tách biệt, không thuộc ứng dụng chính (thiết kế §11).
+exclude = ["poc"]
+
+[workspace.package]
+version = "0.0.0"
+edition = "2021"
+publish = false
+# Cố ý không khai báo `license`: giấy phép chưa chốt (ADR-0010, docs/provenance.md).
+
+# Các ràng buộc dưới đây chỉ là major/minor rộng để khung phân giải được.
+# THEO THIẾT KẾ §8.2: ở M1 chạy `cargo update`, biên dịch, kiểm license/kích thước
+# rồi commit Cargo.lock. Không coi các số này là phiên bản đã kiểm chứng.
+[workspace.dependencies]
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+thiserror = "2"
+tokio = { version = "1", features = ["macros", "rt-multi-thread", "time", "sync"] }
+tokio-util = "0.7"
+url = "2"
+# reqwest 0.x: tên feature TLS có thể đổi giữa các bản, kiểm lại ở M1.
+reqwest = { version = "0.12", default-features = false, features = ["json", "rustls-tls"] }
+
+[profile.release]
+lto = true
+codegen-units = 1
+panic = "abort"
+strip = true

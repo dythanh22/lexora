@@ -1,0 +1,16 @@
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "settings",
+  "description": "Quyền cho cửa sổ cài đặt. Không có command nào đọc lại plaintext key.",
+  "windows": ["settings"],
+  "permissions": [
+    "core:default",
+    "allow-get-capabilities",
+    "allow-get-config",
+    "allow-update-config",
+    "allow-save-secret",
+    "allow-delete-secret",
+    "allow-close-window",
+    "allow-quit-app"
+  ]
+}

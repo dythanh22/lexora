@@ -1,0 +1,78 @@
+/*
+ * Thiết kế token (thiết kế §4.4): font hệ thống 14–16px, tương phản tốt, focus nhìn thấy được.
+ * Đây là công cụ làm việc cạnh nội dung của người dùng: giao diện lùi về sau, nội dung dịch
+ * là thứ duy nhất được nhấn. Một màu nhấn duy nhất (--accent) dành cho hành động chính.
+ */
+:root {
+  --bg: #f3f5f7;
+  --surface: #ffffff;
+  --ink: #161b22;
+  --muted: #566070;
+  --line: #d3d9e0;
+  --accent: #1d5bd6;
+  --accent-ink: #ffffff;
+  --danger: #b3261e;
+  --focus: #1d5bd6;
+
+  --font: system-ui, -apple-system, 'Segoe UI', 'Noto Sans', 'Ubuntu', sans-serif;
+  --size-body: 15px;
+  --size-small: 13px;
+  --line-body: 1.55;
+  --radius: 6px;
+  --gap: 12px;
+
+  color-scheme: light dark;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #14181d;
+    --surface: #1c2128;
+    --ink: #e7ebf0;
+    --muted: #9aa5b4;
+    --line: #313a46;
+    --accent: #6c9bff;
+    --accent-ink: #0b1220;
+    --danger: #ff8a80;
+    --focus: #6c9bff;
+  }
+}
+
+* { box-sizing: border-box; }
+
+html, body, #app { height: 100%; margin: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font: var(--size-body) / var(--line-body) var(--font);
+}
+
+button, textarea, input, select { font: inherit; color: inherit; }
+
+button {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 6px 12px;
+  cursor: pointer;
+}
+button.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+button:disabled { opacity: 0.5; cursor: default; }
+
+textarea, input[type='text'], input[type='password'], select {
+  width: 100%;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 8px 10px;
+}
+
+:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+
+.muted { color: var(--muted); font-size: var(--size-small); }
+.error { color: var(--danger); }
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; }
+}

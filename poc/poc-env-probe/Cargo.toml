@@ -1,0 +1,8 @@
+[package]
+name = "poc-env-probe"
+version = "0.0.0"
+edition = "2021"
+publish = false
+
+[workspace]
+# Crate độc lập: không thuộc workspace gốc.
